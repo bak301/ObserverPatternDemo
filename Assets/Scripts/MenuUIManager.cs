@@ -53,8 +53,15 @@ public class MenuUIManager : MonoBehaviour
         tertiary.enabled = false;
         this.FireEvent(GameEvent.OnLoadData);
     }
-    void OnDestroy()
-    {
-        EventDispatcher.Instance.ClearListeners();
-    }
+
+    //void OnDestroy()
+    //{
+    //    EventDispatcher.Instance.ClearListeners(); 
+    //}
+
+/* bug if enable OnDestroy() to clear Listeners: Some objects were not cleaned up when closing the scene.
+(Did you spawn new GameObjects from OnDestroy?)
+The following scene GameObjects were found:
+Singleton - EventDispatcher*/
+
 }

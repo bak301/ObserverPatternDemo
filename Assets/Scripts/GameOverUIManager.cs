@@ -25,8 +25,8 @@ public class GameOverUIManager : MonoBehaviour
         });
     }
 
-    void OnDestroy()
-    {
-        EventDispatcher.Instance.ClearListeners();
-    }
+    //void OnDestroy()
+    //{
+    //    EventDispatcher.Instance.ClearListeners();
+    //}
 }

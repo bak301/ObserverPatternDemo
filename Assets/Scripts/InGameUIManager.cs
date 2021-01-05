@@ -116,8 +116,8 @@ public class InGameUIManager : MonoBehaviour
         this.FireEvent(GameEvent.OnPlay);
     }
 
-    private void OnDestroy()
-    {
-        EventDispatcher.Instance.ClearListeners();
-    }
+    //private void OnDestroy()
+    //{
+    //    EventDispatcher.Instance.ClearListeners();
+    //}
 }
