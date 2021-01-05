@@ -4,8 +4,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Linq;
+using System;
 
-public class InGameUIManager : MonoBehaviour
+public class InGameUIManager : AbstractUIManager
 {
     [SerializeField] private Button pause;
     [SerializeField] private Button gameOver;
@@ -18,25 +19,11 @@ public class InGameUIManager : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+        InitObservers();
+    }
 
-        SceneManager.sceneLoaded += (scene, mode) =>
-        {
-            if (scene.name == "InGame") this.FireEvent(GameEvent.OnInitGame);
-        };
-
-        pause.onClick.AddListener(() => 
-        {
-            if (gameOver.interactable)
-            {
-                pause.FireEvent(GameEvent.OnPause);
-            } else
-            {
-                pause.FireEvent(GameEvent.OnPlay);
-            }
-        });
-
-        gameOver.onClick.AddListener(() => gameOver.FireEvent(GameEvent.OnComplete));
-        
+    protected override void RegisterListeners()
+    {
         this.RegisterListener(GameEvent.OnStartGame, (param) =>
         {
             this.FireEvent(GameEvent.OnInitGame);
@@ -48,7 +35,7 @@ public class InGameUIManager : MonoBehaviour
             main.enabled = false;
             secondary.enabled = false;
             tertiary.enabled = true;
-            
+
             StartCoroutine(InitDelay());
             Debug.Log("Init player and enemy ...");
         });
@@ -75,12 +62,31 @@ public class InGameUIManager : MonoBehaviour
             Time.timeScale = 0;
             Debug.Log("Game paused. Take a cup of coffee");
         });
+
         this.RegisterListener(GameEvent.OnComplete, (param) =>
         {
             SceneManager.LoadSceneAsync("GameOver");
             Debug.Log("Game completed. Congratulation.");
         });
-        
+    }
+
+    protected override void AddListenersToComponent()
+    {
+        SceneManager.sceneLoaded += (scene, mode) =>
+        {
+            if (scene.name == "InGame")
+                this.FireEvent(GameEvent.OnInitGame);
+        };
+
+        pause.onClick.AddListener(() =>
+        {
+            bool isGameNotPaused = gameOver.IsInteractable();
+            GameEvent @event = isGameNotPaused ? GameEvent.OnPause : GameEvent.OnPlay;
+            pause.FireEvent(@event);
+        });
+
+        gameOver.onClick.AddListener(() => gameOver.FireEvent(GameEvent.OnComplete));
+
     }
 
     private IEnumerator InitDelay()
