@@ -6,7 +6,7 @@ public enum GameEvent
 {
     OnLoadData,
     OnIdleGame,
-    OnStartGame,
+    OnLoadGame,
     OnInitGame,
     OnReadyGame,
     OnPlay,
